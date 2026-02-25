@@ -11,8 +11,26 @@ on:
       - 'next/**'
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: next
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "npm"
+          cache-dependency-path: next/package-lock.json
+      - run: npm ci
+      - name: Run ESLint (Linter-Bot)
+        run: npm run lint
+
   build:
     runs-on: ubuntu-latest
+    needs: lint
     defaults:
       run:
         working-directory: next
@@ -29,4 +47,3 @@ jobs:
         env:
           OPENAI_API_KEY: sk-0000000000
       - run: ./prisma/useSqlite.sh && npm run postinstall
-
