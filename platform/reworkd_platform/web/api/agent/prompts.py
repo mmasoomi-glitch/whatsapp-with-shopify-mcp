@@ -2,6 +2,10 @@ from langchain import PromptTemplate
 
 # Create initial tasks using plan and solve prompting
 # https://github.com/AGI-Edgerunners/Plan-and-Solve-Prompting
+from langchain import PromptTemplate
+
+# Create initial tasks using plan and solve prompting
+# https://github.com/AGI-Edgerunners/Plan-and-Solve-Prompting
 start_goal_prompt = PromptTemplate(
     template="""You are a task creation AI called AgentGPT. 
 You answer in the "{language}" language. You have the following objective "{goal}". 
@@ -9,15 +13,13 @@ Return a list of search queries that would be required to answer the entirety of
 Limit the list to a maximum of 5 queries. Ensure the queries are as succinct as possible. 
 For simple questions use a single query.
 
-Return the response as a JSON array of strings. Examples:
+You MUST return ONLY a JSON array of strings. No other text, no "query:" prefix, no explanation.
 
-query: "Who is considered the best NBA player in the current season?", answer: ["current NBA MVP candidates"]
-query: "How does the Olympicpayroll brand currently stand in the market, and what are its prospects and strategies for expansion in NJ, NY, and PA?", answer: ["Olympicpayroll brand comprehensive analysis 2023", "customer reviews of Olympicpayroll.com", "Olympicpayroll market position analysis", "payroll industry trends forecast 2023-2025", "payroll services expansion strategies in NJ, NY, PA"]
-query: "How can I create a function to add weight to edges in a digraph using {language}?", answer: ["algorithm to add weight to digraph edge in {language}"]
-query: "What is the current weather in New York?", answer: ["current weather in New York"]
-query: "5 + 5?", answer: ["Sum of 5 and 5"]
-query: "What is a good homemade recipe for KFC-style chicken?", answer: ["KFC style chicken recipe at home"]
-query: "What are the nutritional values of almond milk and soy milk?", answer: ["nutritional information of almond milk", "nutritional information of soy milk"]""",
+Examples:
+["current NBA MVP candidates"]
+["Olympicpayroll brand analysis 2023", "customer reviews Olympicpayroll", "payroll expansion NJ NY PA"]
+["current weather in New York"]
+["top AI tools for e-commerce 2024", "best AI e-commerce platforms comparison", "AI tools e-commerce ROI"]""",
     input_variables=["goal", "language"],
 )
 
@@ -183,3 +185,4 @@ chat_prompt = PromptTemplate(
     """,
     input_variables=["language"],
 )
+
