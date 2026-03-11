@@ -1,0 +1,70 @@
+name: ?? Auto Review Assignment
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+    branches: [ "main" ]
+
+jobs:
+  assign-reviewers:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Assign Adam and James as reviewers
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              reviewers: ['adam-mcp-reviewer', 'james-mcp-reviewer']
+            });
+
+      - name: Post Adam briefing comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ?? ADAM — Your Review Required
+              
+**Your job:** Review WHAT changed and WHY — not the code itself.
+
+1. Read the PR description above
+2. Ask yourself: "Does this make sense for the product?"
+3. If YES ? comment: \`ADAM-APPROVED\`
+4. If NO ? comment exactly what you disagree with
+
+> ?? Do NOT approve if the PR description is unclear or missing a business reason.
+> Tag @mmasoomi-glitch if unsure.`
+            });
+
+      - name: Post James briefing comment  
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ?? JAMES — Your Technical Review Required
+
+**Your job:** Review code quality, dependencies, and bot reports.
+
+1. Click **"Files changed"** tab — review the code diff
+2. Check bot reports below:
+   - ?? Dependency-Bot — new packages justified?
+   - ? Linter-Bot — all checks green?
+   - ?? Tests — new functions have tests?
+3. If ALL good ? comment: \`JAMES-APPROVED\`
+4. If issues ? comment exactly what needs fixing
+
+> ?? Never approve if Linter-Bot failing, packages unjustified, or tests missing.
+> Tag @mmasoomi-glitch if unsure.`
+            });
